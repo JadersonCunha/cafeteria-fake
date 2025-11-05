@@ -1,7 +1,4 @@
 :root {
-    /* Manteve a unidade base de 10px para que as unidades "rem"
-     * no resto do código correspondam aos tamanhos em pixels pretendidos
-     * (ex: 1.8rem = 18px). Isso é uma boa prática para manter a escala. */
     --main-color: #d3ad7f;
     --black: #13131a;
     --bg: #010103;
@@ -31,8 +28,6 @@ body {
 section {
     padding: 3rem 2rem;
     margin: 0 auto;
-    /* A max-width é a principal responsável pela responsividade em telas grandes,
-     * pois evita que o conteúdo se estique demais, mantendo a legibilidade. */
     max-width: 1200px;
     width: 100%;
     box-sizing: border-box;
@@ -132,7 +127,6 @@ section {
     min-height: 100vh;
 }
 .home-container {
-    background-image: url(Assets/xicaras_back.png);
     height: auto;
     min-height: 100vh;
     background-size: cover;
@@ -207,9 +201,6 @@ section {
     line-height: 1.8;
 }
 .box-container {
-    /* A propriedade grid com auto-fit e minmax é a chave para
-     * a responsividade da grade, ajustando automaticamente
-     * o número de colunas. */
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
     gap: 1.5rem;
@@ -591,7 +582,6 @@ section {
     cursor: pointer;
 }
 @media (max-width: 900px) {
-    /* Telas de tablet para baixo */
     .header section {
         flex-direction: column;
         align-items: flex-start;
@@ -610,7 +600,6 @@ section {
     }
 }
 @media (max-width: 600px) {
-    /* Telas de celular para baixo */
     section {
         padding: 1rem 0.5rem;
     }
@@ -641,7 +630,6 @@ section {
         padding: 8px 2px;
     }
     .box-container {
-        /* Garante que em telas menores, a grade tenha uma única coluna */
         grid-template-columns: 1fr;
     }
     .pagamento-content {

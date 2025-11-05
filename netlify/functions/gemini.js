@@ -2,7 +2,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 exports.handler = async (event) => {
     try {
-        const apiKey = process.env.GOOGLE_API_KEY; 
+        const apiKey = process.env.GEMINI_API_KEY; 
         if (!apiKey) {
             return {
                 statusCode: 500,
