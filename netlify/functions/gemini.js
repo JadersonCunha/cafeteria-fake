@@ -1,7 +1,4 @@
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-
 exports.handler = async (event) => {
-    // Headers CORS
     const headers = {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Content-Type',
@@ -9,16 +6,10 @@ exports.handler = async (event) => {
         'Content-Type': 'application/json'
     };
 
-    // Handle preflight OPTIONS request
     if (event.httpMethod === 'OPTIONS') {
-        return {
-            statusCode: 200,
-            headers,
-            body: ''
-        };
+        return { statusCode: 200, headers, body: '' };
     }
 
-    // Only allow POST requests
     if (event.httpMethod !== 'POST') {
         return {
             statusCode: 405,
@@ -28,53 +19,75 @@ exports.handler = async (event) => {
     }
 
     try {
-        const apiKey = process.env.GEMINI_API_KEY; 
+        const apiKey = process.env.GEMINI_API_KEY;
+        
         if (!apiKey) {
             console.error('GEMINI_API_KEY não encontrada');
             return {
                 statusCode: 500,
                 headers,
-                body: JSON.stringify({ error: "Chave de API do Google não encontrada." }),
+                body: JSON.stringify({ error: 'Chave de API não configurada' })
             };
         }
-        
+
         if (!event.body) {
             return {
                 statusCode: 400,
                 headers,
-                body: JSON.stringify({ error: 'Corpo da requisição é obrigatório' })
+                body: JSON.stringify({ error: 'Body obrigatório' })
             };
         }
 
-        const body = JSON.parse(event.body);
-        const prompt = body.query;
-
-        if (!prompt) {
+        const { query } = JSON.parse(event.body);
+        
+        if (!query) {
             return {
                 statusCode: 400,
                 headers,
-                body: JSON.stringify({ error: 'Query é obrigatória' })
+                body: JSON.stringify({ error: 'Query obrigatória' })
             };
         }
-        
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-pro"});
 
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
+        // Usar fetch para chamar a API do Gemini diretamente
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: `Você é um especialista em café. Responda sobre: ${query}`
+                    }]
+                }]
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.text();
+            console.error('Erro da API Gemini:', response.status, errorData);
+            return {
+                statusCode: 500,
+                headers,
+                body: JSON.stringify({ error: 'Erro na API do Gemini' })
+            };
+        }
+
+        const data = await response.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sem resposta';
 
         return {
             statusCode: 200,
             headers,
-            body: JSON.stringify({ result: text }),
+            body: JSON.stringify({ result: text })
         };
+
     } catch (error) {
-        console.error("Erro ao gerar conteúdo:", error);
+        console.error('Erro geral:', error);
         return {
             statusCode: 500,
             headers,
-            body: JSON.stringify({ error: 'Erro ao buscar resposta da IA.' }),
+            body: JSON.stringify({ error: `Erro interno: ${error.message}` })
         };
     }
 };
