@@ -47,7 +47,20 @@ exports.handler = async (event) => {
             };
         }
 
-        // Chamar seu agente específico "Tudo Sobre o café"
+        // Criar agente especializado em café com prompt detalhado
+        const coffeeExpertPrompt = `Você é um especialista em café com conhecimento profundo sobre:
+- Tipos de grãos (Arábica, Robusta, etc.)
+- Métodos de preparo (Espresso, V60, French Press, etc.)
+- Torra e moagem
+- Bebidas de café (Cappuccino, Latte, Macchiato, etc.)
+- História e cultura do café
+- Equipamentos e acessórios
+- Dicas de barista
+
+Responda de forma amigável, informativa e prática. Se a pergunta não for sobre café, redirecione educadamente para temas relacionados ao café.
+
+Pergunta: ${query}`;
+
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: {
@@ -56,14 +69,9 @@ exports.handler = async (event) => {
             body: JSON.stringify({
                 contents: [{
                     parts: [{
-                        text: `@02dcbcbd106c ${query}`
+                        text: coffeeExpertPrompt
                     }]
-                }],
-                systemInstruction: {
-                    parts: [{
-                        text: "Você é o agente 'Tudo Sobre o café'. Use todo seu conhecimento especializado sobre café para responder."
-                    }]
-                }
+                }]
             })
         });
 
