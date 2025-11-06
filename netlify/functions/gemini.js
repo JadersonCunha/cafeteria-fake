@@ -2,7 +2,7 @@ exports.handler = async (event) => {
     const headers = {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS, GET',
         'Content-Type': 'application/json'
     };
 
@@ -59,55 +59,41 @@ exports.handler = async (event) => {
             };
         }
 
-        // Criar agente especializado em café com prompt detalhado
-        const coffeeExpertPrompt = `Você é um especialista em café com conhecimento profundo sobre:
-- Tipos de grãos (Arábica, Robusta, etc.)
-- Métodos de preparo (Espresso, V60, French Press, etc.)
-- Torra e moagem
-- Bebidas de café (Cappuccino, Latte, Macchiato, etc.)
-- História e cultura do café
-- Equipamentos e acessórios
-- Dicas de barista
+        
+        const coffeeResponses = {
+            'espresso': 'O espresso é a base de muitas bebidas de café. É preparado forçando água quente sob pressão pelos grãos moídos finamente. Deve ter crema dourada e sabor intenso.',
+            'cappuccino': 'O cappuccino é feito com 1/3 espresso, 1/3 leite vaporizado e 1/3 espuma de leite. É tradicionalmente servido em xícara de 150-180ml.',
+            'latte': 'O latte tem mais leite que o cappuccino: espresso com muito leite vaporizado e pouca espuma. Perfeito para quem gosta de sabor mais suave.',
+            'arabica': 'Café Arábica tem sabor mais suave e doce, com menos cafeína. É considerado de qualidade superior ao Robusta.',
+            'robusta': 'Café Robusta tem mais cafeína, sabor mais amargo e é mais resistente. Usado em blends para espresso.',
+            'moagem': 'A moagem deve ser adequada ao método: fina para espresso, média para filtro, grossa para French Press.',
+            'french press': 'French Press usa moagem grossa e tempo de extração de 4 minutos. Produz café encorpado e aromático.',
+            'v60': 'V60 é um método de filtro que realça acidez e notas frutais. Use moagem média-fina e despeje a água em movimentos circulares.',
+            'torra': 'A torra influencia o sabor: clara preserva acidez, média equilibra doçura e acidez, escura intensifica amargor.',
+            'barista': 'Um bom barista domina temperatura (90-96°C), tempo de extração, proporção café/água e técnicas de vaporização do leite.'
+        };
 
-Responda de forma amigável, informativa e prática. Se a pergunta não for sobre café, redirecione educadamente para temas relacionados ao café.
-
-Pergunta: ${query}`;
-
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{
-                        text: coffeeExpertPrompt
-                    }]
-                }]
-            })
-        });
-
-        if (!response.ok) {
-            const errorData = await response.text();
-            console.error('Erro da API Gemini:', response.status, errorData);
-            
-            // Fallback para resposta genérica se API falhar
-            return {
-                statusCode: 200,
-                headers,
-                body: JSON.stringify({ 
-                    result: `Sobre ${query}: Sou um especialista em café e posso ajudar com informações sobre diferentes tipos de café, métodos de preparo, e tudo relacionado ao mundo do café!` 
-                })
-            };
+        let response = `Sobre "${query}": `;
+        
+        const queryLower = query.toLowerCase();
+        let found = false;
+        
+        for (const [key, value] of Object.entries(coffeeResponses)) {
+            if (queryLower.includes(key)) {
+                response = value;
+                found = true;
+                break;
+            }
         }
-
-        const data = await response.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || `Sobre ${query}: Posso ajudar com informações sobre café!`;
+        
+        if (!found) {
+            response += 'Sou especialista em café! Posso ajudar com informações sobre espresso, cappuccino, latte, tipos de grãos (arabica/robusta), moagem, métodos de preparo (V60, French Press), torra, dicas de barista e muito mais sobre café!';
+        }
 
         return {
             statusCode: 200,
             headers,
-            body: JSON.stringify({ result: text })
+            body: JSON.stringify({ result: response })
         };
 
     } catch (error) {
