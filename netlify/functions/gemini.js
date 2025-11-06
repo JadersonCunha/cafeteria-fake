@@ -22,7 +22,6 @@ exports.handler = async (event) => {
         const apiKey = process.env.GEMINI_API_KEY;
         
         if (!apiKey) {
-            console.error('GEMINI_API_KEY não encontrada');
             return {
                 statusCode: 500,
                 headers,
@@ -48,38 +47,29 @@ exports.handler = async (event) => {
             };
         }
 
-        // Usar fetch para chamar a API do Gemini diretamente
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{
-                        text: `Você é um especialista em café. Responda sobre: ${query}`
-                    }]
-                }]
-            })
-        });
+        // Resposta simulada para teste - depois trocaremos pela API real
+        const coffeeResponses = {
+            'café': 'O café é uma bebida estimulante feita a partir dos grãos torrados da planta Coffea. É uma das bebidas mais populares do mundo!',
+            'espresso': 'O espresso é um método de preparo do café onde a água quente é forçada sob pressão pelos grãos moídos finamente.',
+            'cappuccino': 'O cappuccino é uma bebida italiana feita com espresso, leite vaporizado e espuma de leite em partes iguais.',
+            'latte': 'O latte é uma bebida de café feita com espresso e leite vaporizado, com uma pequena quantidade de espuma por cima.'
+        };
 
-        if (!response.ok) {
-            const errorData = await response.text();
-            console.error('Erro da API Gemini:', response.status, errorData);
-            return {
-                statusCode: 500,
-                headers,
-                body: JSON.stringify({ error: 'Erro na API do Gemini' })
-            };
+        // Buscar resposta baseada na query
+        let response = 'Desculpe, não tenho informações específicas sobre isso. Posso ajudar com informações sobre café, espresso, cappuccino ou latte!';
+        
+        const queryLower = query.toLowerCase();
+        for (const [key, value] of Object.entries(coffeeResponses)) {
+            if (queryLower.includes(key)) {
+                response = value;
+                break;
+            }
         }
-
-        const data = await response.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sem resposta';
 
         return {
             statusCode: 200,
             headers,
-            body: JSON.stringify({ result: text })
+            body: JSON.stringify({ result: response })
         };
 
     } catch (error) {
