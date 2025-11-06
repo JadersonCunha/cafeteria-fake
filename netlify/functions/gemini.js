@@ -59,26 +59,14 @@ exports.handler = async (event) => {
             };
         }
 
-        // Conectar com API real do Gemini
-        const prompt = `Você é um especialista em café com conhecimento profundo sobre:
-- História do café (origem, chegada ao Brasil em 1727 por Francisco de Melo Palheta)
-- Tipos de grãos (Arábica, Robusta, suas características)
-- Métodos de preparo (Espresso, V60, French Press, Chemex, etc.)
-- Bebidas (Cappuccino, Latte, Macchiato, etc.)
-- Torra e moagem
-- Regiões produtoras
-- Técnicas de barista
-- Equipamentos
+        // Usar seu agente "Tudo sobre o café" - ID: 02dcbcbd106c
+        const prompt = query; // Enviar pergunta diretamente para seu agente especializado
 
-Responda de forma informativa, prática e amigável. Se a pergunta não for sobre café, redirecione educadamente para temas relacionados ao café.
-
-Pergunta: ${query}`;
-
-        // Testar diferentes URLs da API
+        // Testar URLs para seu agente específico
         const urls = [
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
             `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`,
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`
         ];
 
         let response = null;
@@ -96,7 +84,12 @@ Pergunta: ${query}`;
                             parts: [{
                                 text: prompt
                             }]
-                        }]
+                        }],
+                        systemInstruction: {
+                            parts: [{
+                                text: "Você é o agente 'Tudo sobre o café' (ID: 02dcbcbd106c). Você é um especialista em café com conhecimento profundo sobre história, tipos de grãos, métodos de preparo, bebidas, torra, moagem, regiões produtoras e técnicas de barista. Responda sempre de forma informativa e especializada sobre café."
+                            }]
+                        }
                     })
                 });
 
