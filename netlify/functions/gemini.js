@@ -10,6 +10,18 @@ exports.handler = async (event) => {
         return { statusCode: 200, headers, body: '' };
     }
 
+    if (event.httpMethod === 'GET') {
+        return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify({ 
+                message: 'Função IA funcionando!',
+                status: 'OK',
+                usage: 'Use POST com {"query": "sua pergunta"}'
+            })
+        };
+    }
+
     if (event.httpMethod !== 'POST') {
         return {
             statusCode: 405,
