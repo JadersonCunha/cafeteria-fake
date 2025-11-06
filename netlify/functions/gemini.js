@@ -47,8 +47,8 @@ exports.handler = async (event) => {
             };
         }
 
-        // Chamar API real do Gemini
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
+        // Chamar seu agente específico "Tudo Sobre o café"
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/agents/02dcbcbd106c:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -56,7 +56,7 @@ exports.handler = async (event) => {
             body: JSON.stringify({
                 contents: [{
                     parts: [{
-                        text: `Você é um especialista em café e cafeteria. Responda de forma amigável e informativa sobre: ${query}`
+                        text: query
                     }]
                 }]
             })
