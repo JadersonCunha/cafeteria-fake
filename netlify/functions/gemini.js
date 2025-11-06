@@ -48,7 +48,7 @@ exports.handler = async (event) => {
         }
 
         // Chamar seu agente específico "Tudo Sobre o café"
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/agents/02dcbcbd106c:generateContent?key=${apiKey}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -56,9 +56,14 @@ exports.handler = async (event) => {
             body: JSON.stringify({
                 contents: [{
                     parts: [{
-                        text: query
+                        text: `@02dcbcbd106c ${query}`
                     }]
-                }]
+                }],
+                systemInstruction: {
+                    parts: [{
+                        text: "Você é o agente 'Tudo Sobre o café'. Use todo seu conhecimento especializado sobre café para responder."
+                    }]
+                }
             })
         });
 
