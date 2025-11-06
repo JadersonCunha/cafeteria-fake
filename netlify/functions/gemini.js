@@ -47,29 +47,42 @@ exports.handler = async (event) => {
             };
         }
 
-        // Resposta simulada para teste - depois trocaremos pela API real
-        const coffeeResponses = {
-            'café': 'O café é uma bebida estimulante feita a partir dos grãos torrados da planta Coffea. É uma das bebidas mais populares do mundo!',
-            'espresso': 'O espresso é um método de preparo do café onde a água quente é forçada sob pressão pelos grãos moídos finamente.',
-            'cappuccino': 'O cappuccino é uma bebida italiana feita com espresso, leite vaporizado e espuma de leite em partes iguais.',
-            'latte': 'O latte é uma bebida de café feita com espresso e leite vaporizado, com uma pequena quantidade de espuma por cima.'
-        };
+        // Chamar API real do Gemini
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: `Você é um especialista em café e cafeteria. Responda de forma amigável e informativa sobre: ${query}`
+                    }]
+                }]
+            })
+        });
 
-        // Buscar resposta baseada na query
-        let response = 'Desculpe, não tenho informações específicas sobre isso. Posso ajudar com informações sobre café, espresso, cappuccino ou latte!';
-        
-        const queryLower = query.toLowerCase();
-        for (const [key, value] of Object.entries(coffeeResponses)) {
-            if (queryLower.includes(key)) {
-                response = value;
-                break;
-            }
+        if (!response.ok) {
+            const errorData = await response.text();
+            console.error('Erro da API Gemini:', response.status, errorData);
+            
+            // Fallback para resposta genérica se API falhar
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify({ 
+                    result: `Sobre ${query}: Sou um especialista em café e posso ajudar com informações sobre diferentes tipos de café, métodos de preparo, e tudo relacionado ao mundo do café!` 
+                })
+            };
         }
+
+        const data = await response.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || `Sobre ${query}: Posso ajudar com informações sobre café!`;
 
         return {
             statusCode: 200,
             headers,
-            body: JSON.stringify({ result: response })
+            body: JSON.stringify({ result: text })
         };
 
     } catch (error) {
