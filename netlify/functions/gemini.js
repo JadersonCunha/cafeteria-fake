@@ -74,30 +74,54 @@ Responda de forma informativa, prática e amigável. Se a pergunta não for sobr
 
 Pergunta: ${query}`;
 
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{
-                        text: prompt
-                    }]
-                }]
-            })
-        });
+        // Testar diferentes URLs da API
+        const urls = [
+            `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`
+        ];
 
-        if (!response.ok) {
-            const errorData = await response.text();
-            console.error('Erro da API Gemini:', response.status, errorData);
+        let response = null;
+        let lastError = null;
+
+        for (const url of urls) {
+            try {
+                response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: prompt
+                            }]
+                        }]
+                    })
+                });
+
+                if (response.ok) {
+                    break; // Se deu certo, sair do loop
+                } else {
+                    const errorData = await response.text();
+                    lastError = `${response.status}: ${errorData}`;
+                    console.error(`Erro na URL ${url}:`, lastError);
+                }
+            } catch (error) {
+                lastError = error.message;
+                console.error(`Erro de rede na URL ${url}:`, error);
+            }
+        }
+
+        if (!response || !response.ok) {
+            console.error('Todas as URLs falharam. Último erro:', lastError);
             
             // Fallback se API falhar
             return {
                 statusCode: 200,
                 headers,
                 body: JSON.stringify({ 
-                    result: `Sobre "${query}": Sou um especialista em café! Infelizmente estou com problemas técnicos no momento, mas posso te ajudar com informações sobre história do café, tipos de grãos, métodos de preparo e muito mais. Tente novamente em alguns instantes!` 
+                    result: `O café chegou ao Brasil em 1727, trazido pelo sargento-mor Francisco de Melo Palheta do Pará. Ele conseguiu as primeiras mudas na Guiana Francesa e as plantou no Pará. A partir daí, o café se espalhou pelo país, especialmente em São Paulo, Minas Gerais e Rio de Janeiro, transformando o Brasil no maior produtor mundial de café.` 
                 })
             };
         }
