@@ -109,12 +109,11 @@ exports.handler = async (event) => {
         if (!response || !response.ok) {
             console.error('Todas as URLs falharam. Último erro:', lastError);
             
-            // Fallback se API falhar
             return {
-                statusCode: 200,
+                statusCode: 500,
                 headers,
                 body: JSON.stringify({ 
-                    result: `O café chegou ao Brasil em 1727, trazido pelo sargento-mor Francisco de Melo Palheta do Pará. Ele conseguiu as primeiras mudas na Guiana Francesa e as plantou no Pará. A partir daí, o café se espalhou pelo país, especialmente em São Paulo, Minas Gerais e Rio de Janeiro, transformando o Brasil no maior produtor mundial de café.` 
+                    error: `Erro na API do Gemini: ${lastError}. Verifique se a chave de API está configurada corretamente no Netlify.`
                 })
             };
         }
