@@ -62,10 +62,10 @@ exports.handler = async (event) => {
         // Usar seu agente "Tudo sobre o café" - ID: 02dcbcbd106c
         const prompt = query; // Enviar pergunta diretamente para seu agente especializado
 
-        // Testar URLs para seu agente específico
+        // URLs corretas da API Gemini
         const urls = [
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
-            `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`,
             `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`
         ];
 
