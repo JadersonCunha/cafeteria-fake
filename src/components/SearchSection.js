@@ -44,7 +44,7 @@ const SearchSection = () => {
       <h3 className="subtitulo-box">
         Sua pergunta: <span style={{fontWeight: 'normal'}}>{query}</span>
       </h3>
-      <div style={{textAlign: 'justify', marginTop: '1.5rem'}}>
+      <div style={{textAlign: 'justify', marginTop: '1.5rem', fontSize: '1.8rem', lineHeight: '1.6'}}>
         {result.split('\n').map((line, index) => (
           <React.Fragment key={index}>
             {line}
