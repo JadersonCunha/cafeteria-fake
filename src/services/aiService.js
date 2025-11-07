@@ -9,7 +9,9 @@ export const searchCoffeeInfo = async (query) => {
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Erro do servidor:', response.status, errorText);
-      throw new Error(`Erro ${response.status}: ${errorText}`);
+      console.error('URL chamada:', '/.netlify/functions/gemini');
+      console.error('Query enviada:', query);
+      throw new Error(`API Error ${response.status}: ${errorText}`);
     }
 
     const data = await response.json();
