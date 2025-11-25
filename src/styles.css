@@ -294,9 +294,9 @@ section {
     color: var(--black);
     border: 0.1rem solid rgba(255, 255, 255, 0.3);
     /* Use fixed size to make it perfectly circular */
-    width: 3.3rem; /* slightly larger to fit the slightly bigger font */
-    height: 3.3rem;
-    font-size: 1.05rem; /* slightly increased */
+    width: 3.9rem; /* increased to make the button a bit larger */
+    height: 3.9rem;
+    font-size: 1.05rem; /* keep font size the same */
     padding: 0; /* center with flexbox */
     border-radius: 50%;
     cursor: pointer;
@@ -317,9 +317,9 @@ section {
     #btn-top {
         bottom: 18px;
         right: 18px;
-        width: 2.8rem; /* a little larger so increased text remains readable */
-        height: 2.8rem;
-        font-size: 1rem; /* slightly increased on mobile too */
+        width: 3.2rem; /* slightly larger for readability on mobile */
+        height: 3.2rem;
+        font-size: 1.05rem; /* keep consistent */
         padding: 0;
         color: var(--black); /* ensure mobile text is also black */
     }
