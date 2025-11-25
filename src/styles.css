@@ -288,23 +288,40 @@ section {
 }
 #btn-top {
     position: fixed;
-    bottom: 40px;
-    right: 40px;
+    bottom: 28px; /* moved closer to the edge */
+    right: 28px;  /* moved closer to the edge */
     background: var(--main-color);
     color: var(--br);
     border: 0.1rem solid rgba(255, 255, 255, 0.3);
-    font-size: 2.5rem;
-    padding: 0.7rem 1.2rem;
+    /* Use fixed size to make it perfectly circular */
+    width: 3.1rem;
+    height: 3.1rem;
+    font-size: 0.95rem; /* smaller */
+    padding: 0; /* center with flexbox */
     border-radius: 50%;
     cursor: pointer;
     z-index: 100;
-    transition: background 0.2s, color 0.2s;
-    transform: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.06rem;
+    transition: background 0.2s, color 0.2s, transform 0.15s;
 }
 #btn-top:hover {
     background: var(--br);
     color: var(--main-color);
-    transform: scale(1.1);
+    transform: scale(1.08);
+}
+/* Smaller button on mobile for better fit */
+@media (max-width: 600px) {
+    #btn-top {
+        bottom: 18px;
+        right: 18px;
+        width: 2.6rem;
+        height: 2.6rem;
+        font-size: 0.9rem;
+        padding: 0;
+    }
 }
 #search-cafe {
     background: var(--bg);

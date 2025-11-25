@@ -7,8 +7,14 @@ const ScrollToTop = () => {
   if (!showButton) return null;
 
   return (
-    <button id="btn-top" onClick={scrollToTop}>
-      Voltar ao topo ⇧
+    <button
+      id="btn-top"
+      className="btn-top-small"
+      onClick={scrollToTop}
+      aria-label="Voltar ao topo"
+      title="Voltar ao topo"
+    >
+      TOPO ↑
     </button>
   );
 };
