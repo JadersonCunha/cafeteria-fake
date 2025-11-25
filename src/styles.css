@@ -291,7 +291,7 @@ section {
     bottom: 28px; /* moved closer to the edge */
     right: 28px;  /* moved closer to the edge */
     background: var(--main-color);
-    color: var(--br);
+    color: var(--black);
     border: 0.1rem solid rgba(255, 255, 255, 0.3);
     /* Use fixed size to make it perfectly circular */
     width: 3.3rem; /* slightly larger to fit the slightly bigger font */
